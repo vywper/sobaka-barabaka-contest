@@ -1,0 +1,11 @@
+__pycache__/
+*.py[cod]
+.venv/
+.env
+.env.*
+.research/
+.pytest_cache/
+ping.stdout.json
+ping.stderr.log
+*.tar
+*.log

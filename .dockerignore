@@ -1,0 +1,9 @@
+# Only runtime inputs enter the build context. Research, tests and secrets stay out.
+**
+!Dockerfile
+!entrypoint.sh
+!solution.json
+!participant/
+!participant/**
+**/__pycache__/
+**/*.pyc
