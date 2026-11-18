@@ -11,25 +11,23 @@ FIELDS = {
     "self_trained_rl",
     "preferred_speed_mps",
 }
-TASKS = {"T2", "T3", "T4", "T5"}
-DEFAULT_CONFIG = Path(__file__).resolve().parent.parent / "solution.json"
+TASKS = {"T2", "T3", "T4", "T5"} # таски
+DEFAULT_CONFIG = Path(__file__).resolve().parent.parent / "solution.json" #/opt/participant/solution.json
 
 
-def _unique_object(pairs):
+def _unique_object(pairs): # запрет на дублирование ключей в json
     result = {}
     for key, value in pairs:
         if key in result:
-            raise ValueError(f"Duplicate JSON key: {key}")
+            raise ValueError(f"Дубликат JSON: {key}")
         result[key] = value
     return result
 
-
 def _reject_constant(value):
-    raise ValueError(f"Non-standard JSON number: {value}")
-
+    raise ValueError(f"В JSON Nan, +-inf: {value}")
 
 def parse_manifest_json(text: str) -> dict:
-    """Reject extra output, duplicate keys and non-standard NaN/Infinity values."""
+    """текст - в словарь."""
     value = json.loads(
         text, object_pairs_hook=_unique_object, parse_constant=_reject_constant
     )
@@ -39,7 +37,9 @@ def parse_manifest_json(text: str) -> dict:
 
 
 def validate_manifest(data: object) -> dict:
-    """Validate our four-field manifest before advertising it to the launcher."""
+    """
+    проверка структуры манифеста решения.
+    """
     if type(data) is not dict:
         raise ValueError("The manifest must be a JSON object")
     if set(data) != FIELDS:
@@ -71,13 +71,17 @@ def validate_manifest(data: object) -> dict:
 
 
 def main() -> int:
+    '''
+    читаем файл манифеста решения, проверяем его и выводим в stdout в виде json.
+    ошибка - в stderr, код возврата 1.
+    '''
     config_path = Path(os.environ.get("SOLUTION_CONFIG", str(DEFAULT_CONFIG)))
     try:
         data = validate_manifest(parse_manifest_json(config_path.read_text(encoding="utf-8")))
     except (OSError, ValueError) as exc:
         print(f"Cannot read solution manifest: {exc}", file=sys.stderr)
         return 1
-    print(json.dumps(data, ensure_ascii=True, separators=(",", ":"), allow_nan=False))
+    print(json.dumps(data, ensure_ascii=True, separators=(",", ":"), allow_nan=False)) # словарь - в JSON
     return 0
 
 
