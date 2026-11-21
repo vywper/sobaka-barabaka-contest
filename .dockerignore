@@ -3,6 +3,8 @@
 !Dockerfile
 !entrypoint.sh
 !solution.json
+!config/
+!config/t2-python.lock
 !participant/
 !participant/**
 **/__pycache__/

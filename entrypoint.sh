@@ -15,7 +15,12 @@ case "$1" in # выбираем модели
         cd /opt/participant
         exec python3 -m participant.ping
         ;;
-    T2|T3|T4|T5) # Не реализовано еще
+    T2)
+        # Подключаем ROS и типы Unitree только для запуска блока безопасности.
+        cd /opt/participant
+        exec /bin/bash -ec 'source /opt/ros/humble/setup.bash; source /opt/go1_interfaces/local_setup.bash; exec python3 -m participant.t2_node'
+        ;;
+    T3|T4|T5) # Не реализовано еще
         printf 'Task %s is not implemented.\n' "$1" >&2
         exit 64
         ;;
